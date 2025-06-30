@@ -5,7 +5,7 @@ function Square({ value, onSquareClick }) {
 }
 
 function Board({xIsNext, squares, onPlay}) {
-	
+
 	function handleClick(i) {
 		if (squares[i] || calculateWinner(squares)) {
 			return;
@@ -16,7 +16,7 @@ function Board({xIsNext, squares, onPlay}) {
 		} else {
 			nextSquares[i] = "O";
 		}
-		
+
 		onPlay(nextSquares);
 	}
 
@@ -45,12 +45,16 @@ function Board({xIsNext, squares, onPlay}) {
 	);
 }
 
+
+
 export default function Game() {
 
 	const [history, setHistory] = useState([Array(9).fill(null)]);
 	const [currentMove, setCurrentMove] = useState(0);
 	const xIsNext = currentMove % 2 === 0;
 	const currentSquares = history[currentMove];
+
+	const [isDescending, setIsDescending] = useState(false);
 
 	function handlePlay(nextSquares) {
 		const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -62,7 +66,7 @@ export default function Game() {
 		setCurrentMove(nextMove);
 	}
 
-	const moves = history.map((squares, move) => {
+	let moves = history.map((squares, move) => {
 		let description;
 		if (move === currentMove) {
 			return <li key={move}>{'You are at move #' + move}</li>
@@ -77,12 +81,26 @@ export default function Game() {
 		)
 	});
 
+	if (isDescending) {
+		moves = moves.reverse();
+	}
+
 	return (
 		<div className='game'>
 			<div className='game-board'>
 				<Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
 			</div>
+
 			<div className='game-info'>
+				<label>Sort Descending: 
+					<input
+						type="checkbox"
+						checked={isDescending}
+						onChange={(e) => {
+							setIsDescending(e.target.checked);
+						}}
+					/>
+				</label>
 				<ol>{moves}
 				</ol>
 			</div>
