@@ -54,9 +54,6 @@ function Board({xIsNext, squares, onPlay}) {
 	);
 }
 
-// Compare the currentSquares and previousSquares to get index of the changed value
-// Divide index by 3 and floor it to get the row,
-// Perform integer division to get col
 
 
 export default function Game() {
@@ -80,13 +77,14 @@ export default function Game() {
 
 	let moves = history.map((squares, move) => {
 
-		const previousSquares = history[currentMove - 1];
+		const previousSquares = history[move - 1];
+		const presentSquares = history[move];
 		let row;
 		let col;
 		if (previousSquares) {
 			let index;
 			for (let i = 0; i < previousSquares.length; i++) {
-				if (previousSquares[i] !== currentSquares[i]) {
+				if (previousSquares[i] !== presentSquares[i]) {
 					index = i;
 					break;
 				}
@@ -98,7 +96,11 @@ export default function Game() {
 
 		let description;
 		if (move === currentMove) {
-			description = 'You are at move #' + move + `, (${row}, ${col})`;
+			if (move === 0) {
+				description = 'You are at move #0';
+			} else {
+				description = 'You are at move #' + move + `, (${row}, ${col})`;
+			}
 			return <li key={move}>{description}</li>
 		} else if (move > 0) {
 			description = 'Go to move #' + move + `, (${row}, ${col})`;
