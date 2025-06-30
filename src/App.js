@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-function Square({ value, onSquareClick }) {
-	return <button className="square" onClick={onSquareClick}>{value}</button>;
+function Square({ value, onSquareClick, highlight }) {
+	return <button className={`square ${highlight}`} onClick={onSquareClick}>{value}</button>;
 }
 
 function Board({xIsNext, squares, onPlay}) {
@@ -23,8 +23,8 @@ function Board({xIsNext, squares, onPlay}) {
 	const winner = calculateWinner(squares);
 	let status;
 	if (winner) {
-		status = "Winner: " + winner;
-	} else {
+		status = "Winner: " + winner[0];
+	}  else {
 		status = "Next player: " + (xIsNext ? "X" : "O");
 	}
 
@@ -36,7 +36,14 @@ function Board({xIsNext, squares, onPlay}) {
 					{[0, 1, 2].map((col) => {
 						const index = row * 3 + col;
 						return (
-							<Square key={index} value={squares[index]} onSquareClick={() => handleClick(index)}/>
+							<Square
+								key={index}
+								value={squares[index]}
+
+								onSquareClick={() => handleClick(index)}
+
+								highlight={winner?.[1].includes(index) ? "winning-square" : ""}
+							/>
 						)
 					})}
 				</div>
@@ -44,6 +51,17 @@ function Board({xIsNext, squares, onPlay}) {
 		</>
 	);
 }
+
+
+
+// Winning squares are highlighed
+// 		I'll get winning squares from calculateWinner() function
+// 		Then I'll use those indices to do some highlighting
+// 		
+// Going back into history unhighlights them
+// Drawed game should say "Draw"
+// 		If "currentSquares" doesn't contain null, and there's no winner, then display Draw
+
 
 
 
@@ -123,7 +141,7 @@ function calculateWinner(squares) {
 	for (let i = 0; i < lines.length; i++) {
 		const [a, b, c] = lines[i];
 		if(squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-			return squares[a];
+			return [squares[a], [a, b, c]];
 		}
 	}
 

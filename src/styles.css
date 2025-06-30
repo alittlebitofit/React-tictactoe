@@ -93,3 +93,7 @@ body {
 .sort-list {
 	padding: 2em;
 }
+
+.winning-square {
+	background-color: #f77f7f;
+}
