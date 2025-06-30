@@ -54,17 +54,9 @@ function Board({xIsNext, squares, onPlay}) {
 	);
 }
 
-
-
-// Winning squares are highlighed
-// 		I'll get winning squares from calculateWinner() function
-// 		Then I'll use those indices to do some highlighting
-// 		
-// Going back into history unhighlights them
-// Drawed game should say "Draw"
-// 		If "currentSquares" doesn't contain null, and there's no winner, then display Draw
-
-
+// Compare the currentSquares and previousSquares to get index of the changed value
+// Divide index by 3 and floor it to get the row,
+// Perform integer division to get col
 
 
 export default function Game() {
@@ -87,11 +79,29 @@ export default function Game() {
 	}
 
 	let moves = history.map((squares, move) => {
+
+		const previousSquares = history[currentMove - 1];
+		let row;
+		let col;
+		if (previousSquares) {
+			let index;
+			for (let i = 0; i < previousSquares.length; i++) {
+				if (previousSquares[i] !== currentSquares[i]) {
+					index = i;
+					break;
+				}
+			}
+
+			row = Math.floor((index) / 3);
+			col = (index) % 3;
+		}
+
 		let description;
 		if (move === currentMove) {
-			return <li key={move}>{'You are at move #' + move}</li>
+			description = 'You are at move #' + move + `, (${row}, ${col})`;
+			return <li key={move}>{description}</li>
 		} else if (move > 0) {
-			description = 'Go to move #' + move;
+			description = 'Go to move #' + move + `, (${row}, ${col})`;
 		} else {
 			description = 'Go to game start';
 		}
@@ -127,6 +137,7 @@ export default function Game() {
 		</div>
 	);
 }
+
 
 function calculateWinner(squares) {
 	const lines = [
